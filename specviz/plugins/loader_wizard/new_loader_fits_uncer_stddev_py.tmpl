@@ -47,6 +47,5 @@ def simple_generic_loader(file_name, **kwargs):
 
 
     # A new spectrum object is returned, which specviz understands
-    return Spectrum1D(data=flux*unit,
-                      spectral_axis=wavelength*disp_unit,
+    return Spectrum1D(spectral_axis=wavelength*disp_unit, flux=flux*unit,
                       uncertainty=StdDevUncertainty(uncertainty), meta=header)

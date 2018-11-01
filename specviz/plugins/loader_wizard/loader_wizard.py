@@ -545,17 +545,19 @@ class FITSImportWizard(BaseImportWizard):
 
         self.new_loader_dict['meta_author'] = 'Wizard'
 
-
     def get_template(self):
         if "uncertainty_hdu" in self.new_loader_dict.keys():
-            template_path = os.path.abspath(
-                os.path.join(os.path.dirname(__file__), ".",
-                             "new_loader_fits_uncer_py.tmpl"))
+            if self.new_loader_dict['uncertainty_type'] == 'std':
+                template = "new_loader_fits_uncer_stddev_py.tmpl"
+
+            else:
+                template = "new_loader_fits_uncer_ivar_py.tmpl"
 
         else:
-            template_path = os.path.abspath(
-                os.path.join(os.path.dirname(__file__), ".",
-                             "new_loader_fits_py.tmpl"))
+            template = "new_loader_fits_py.tmpl"
+
+        template_path = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), ".", template))
 
         return template_path
 
