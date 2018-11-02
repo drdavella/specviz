@@ -8,7 +8,7 @@ from qtpy.QtCore import QEvent, Qt, Signal
 from qtpy.QtWidgets import (QApplication, QMainWindow, QMenu,
                             QMessageBox, QTabBar, QToolButton)
 from qtpy.uic import loadUi
-from specutils import Spectrum1D
+from specutils import Spectrum1D, SpectrumCollection
 
 from .plotting import PlotWindow
 from ..core.items import PlotDataItem
@@ -322,9 +322,14 @@ class Workspace(QMainWindow):
         # errors.
         default_filter = '-- Select file type --'
 
-        filters = [default_filter] + [x['Format'] + " (*)"
-                   for x in io_registry.get_formats(Spectrum1D)
-                   if x['Read'] == 'Yes']
+        spec1d_loaders = io_registry.get_formats(Spectrum1D, readwrite='Read')
+        collection_loaders = io_registry.get_formats(SpectrumCollection, readwrite='Read')
+
+        def collect_filters(loaders):
+            return [x['Format'] + " (*)" for x in loaders]
+
+        filters = ([default_filter] + collect_filters(spec1d_loaders)
+                                    + collect_filters(collection_loaders))
 
         file_path, fmt = compat.getopenfilename(parent=self,
                                                 caption="Load spectral data file",
