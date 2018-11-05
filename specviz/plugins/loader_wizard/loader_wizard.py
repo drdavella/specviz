@@ -12,18 +12,19 @@ import uuid
 from collections import OrderedDict
 
 
-import specutils
 import numpy as np
 import pyqtgraph as pg
 import yaml
 from astropy import units as u
 from astropy.wcs import WCS
+from astropy.io import registry
 from qtpy import compat
 from qtpy.QtCore import Qt
 from qtpy.QtGui import QFont, QIcon
 from qtpy.QtWidgets import QApplication, QDialog, QVBoxLayout, QWidget, QPlainTextEdit, QPushButton
 from qtpy.uic import loadUi
 from ...core.plugin import plugin
+from specutils.io.registers import _load_user_io
 
 from .parse_fits import simplify_arrays, parse_fits
 from .parse_ecsv import parse_ecsv, parse_ascii
@@ -489,7 +490,13 @@ class BaseImportWizard(QDialog):
             f.write(string)
 
         # Refresh loaders so new loader shows up
-        # specutils.io.registers._load_user_io()
+        # First clear all existing registry entries
+        registry._identifiers.clear()
+        registry._writers.clear()
+        registry._readers.clear()
+
+        # Reload the registry
+        _load_user_io()
 
 # --------- Helper methods for subclasses ------------
 
