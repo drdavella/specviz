@@ -336,6 +336,17 @@ class Workspace(QMainWindow):
 
         self.load_data(file_path, file_loader=" ".join(fmt.split()[:-1]))
 
+    def _add_and_plot_data(self, spectrum, name):
+        data_item = self.model.add_data(spectrum, name=name)
+
+        # If there are any current plots, attempt to add the data to the plot
+        plot_data_item = self.proxy_model.item_from_id(data_item.identifier)
+        plot_data_item.visible = True
+        self.current_plot_window.plot_widget.on_item_changed(data_item)
+        self._on_item_changed(item=plot_data_item.data_item)
+
+        return data_item
+
     def load_data(self, file_path, file_loader, display=False):
         """
         Load spectral data given file path and loader.
@@ -355,18 +366,23 @@ class Workspace(QMainWindow):
             The `DataItem` instance that has been added to the internal model.
         """
         try:
-            spec = SpectrumList.read(file_path, format=file_loader)[0]
+            speclist = SpectrumList.read(file_path, format=file_loader)
             name = file_path.split('/')[-1].split('.')[0]
-            data_item = self.model.add_data(spec, name=name)
 
-            # If there are any current plots, attempt to add the data to the
-            # plot
-            plot_data_item = self.proxy_model.item_from_id(data_item.identifier)
-            plot_data_item.visible = True
-            self.current_plot_window.plot_widget.on_item_changed(data_item)
-            self._on_item_changed(item=plot_data_item.data_item)
+            data_items = []
 
-            return data_item
+            if len(speclist) == 1:
+                data_items.append(self._add_and_plot_data(speclist[0], name))
+            else:
+                data_items = []
+                for i, spec in enumerate(speclist):
+                    # TODO: try to use more informative metadata in the name
+                    specname = '{}-{}'.format(name, i)
+                    data_items.append(self._add_and_plot_data(spec, specname))
+
+            # TODO: is this return value useful? Potentially just for testing
+            return data_items
+
         except:
             message_box = QMessageBox()
             message_box.setText("Error loading data set.")
