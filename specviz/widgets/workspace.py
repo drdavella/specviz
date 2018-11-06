@@ -8,7 +8,7 @@ from qtpy.QtCore import QEvent, Qt, Signal
 from qtpy.QtWidgets import (QApplication, QMainWindow, QMenu,
                             QMessageBox, QTabBar, QToolButton)
 from qtpy.uic import loadUi
-from specutils import Spectrum1D
+from specutils import SpectrumList
 
 from .plotting import PlotWindow
 from ..core.items import PlotDataItem
@@ -313,8 +313,8 @@ class Workspace(QMainWindow):
         """
         When the user loads a data file, this method is triggered. It provides
         a file open dialog and from the dialog attempts to create a new
-        :class:`~specutils.Spectrum1D` object and thereafter adds it to the
-        data model.
+        :class:`~specutils.SpectrumList` object and thereafter adds the
+        contents to the data model.
         """
         # This ensures that users actively have to select a file type before
         # being able to select a file. This should make it harder to
@@ -323,7 +323,7 @@ class Workspace(QMainWindow):
         default_filter = '-- Select file type --'
 
         filters = [default_filter] + [x['Format'] + " (*)"
-                   for x in io_registry.get_formats(Spectrum1D)
+                   for x in io_registry.get_formats(SpectrumList)
                    if x['Read'] == 'Yes']
 
         file_path, fmt = compat.getopenfilename(parent=self,
@@ -355,7 +355,7 @@ class Workspace(QMainWindow):
             The `DataItem` instance that has been added to the internal model.
         """
         try:
-            spec = Spectrum1D.read(file_path, format=file_loader)
+            spec = SpectrumList.read(file_path, format=file_loader)[0]
             name = file_path.split('/')[-1].split('.')[0]
             data_item = self.model.add_data(spec, name=name)
 
