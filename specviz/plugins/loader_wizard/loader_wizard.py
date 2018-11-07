@@ -20,6 +20,7 @@ from ...core.plugin import plugin
 from specutils.io.registers import _load_user_io
 
 from .base_import_wizard import BaseImportWizard
+from .jwst_import_wizard import JWSTImportWizard
 from .parse_fits import simplify_arrays, parse_fits
 from .parse_ecsv import parse_ecsv, parse_ascii
 
@@ -125,7 +126,11 @@ class LoaderWizard(QDialog):
             return
 
         if filename.lower().endswith('fits'):
-            dialog = FITSImportWizard(simplify_arrays(parse_fits(filename)))
+            parsed_hdus = parse_fits(filename)
+            if 'ASDF' in parsed_hdus and 'EXTRACT1D' in parsed_hdus:
+                dialog = JWSTImportWizard(filename)
+            else:
+                dialog = FITSImportWizard(simplify_arrays(parsed_hdus))
 
         elif filename.lower().endswith('ecsv'):
             dialog = ECSVImportWizard(simplify_arrays(parse_ecsv(filename)))
