@@ -460,13 +460,9 @@ class BaseImportWizard(QDialog):
         """
         return self.bool_uncertainties.isChecked()
 
-    def accept(self, event=None):
+    def accept(self, *args, **kwargs):
         """
         Hides the modal dialog and sets the result code to Accepted.
-
-        Parameters
-        ----------
-        event
         """
         super(BaseImportWizard, self).accept()
 
@@ -573,7 +569,7 @@ class BaseImportWizard(QDialog):
 
         Returns
         -------
-        bool:
+        bool
             `True` if units are valid and loader name has been provided,
             otherwise `False`
         """
