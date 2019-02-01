@@ -24,7 +24,7 @@ def parse_unit(unit):
 
     Parameters
     ----------
-    unit: str or `Astropy.units.Unit`
+    unit : str or `Astropy.units.Unit`
         Input unit. If not a string, may already be in `Astropy.units.Unit`.
 
     Returns
