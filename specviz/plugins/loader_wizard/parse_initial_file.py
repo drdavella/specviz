@@ -19,17 +19,17 @@ UNIT_FIXES = {
 
 def parse_unit(unit):
     """
-    Parse unit input into an `Astropy.units.Unit` object.
+    Parse unit input into an :class:`Astropy.units.Unit` object.
     
 
     Parameters
     ----------
-    unit : str or `Astropy.units.Unit`
-        Input unit. If not a string, may already be in `Astropy.units.Unit`.
+    unit : str or :class:`Astropy.units.Unit`
+        Input unit. If not a string, may already be in :class:`Astropy.units.Unit`.
 
     Returns
     -------
-    : `Astropy.units.Unit`
+    : :class:`Astropy.units.Unit`
         The interpreted Astropy unit.
     """
     if not isinstance(unit, u.Unit):
