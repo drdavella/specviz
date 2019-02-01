@@ -31,22 +31,15 @@ from ...core.plugin import plugin
 from .parse_initial_file import parse_ascii, simplify_arrays
 
 
-def represent_dict_order(self, data):
+def _represent_dict_order(self, data):
     """
-
-    Parameters
-    ----------
-    self
-    data
-
-    Returns
-    -------
-
+    Define yaml-based dictionary representation for serialization. Used to
+    preserve order. Used only for yaml serialization.
     """
     return self.represent_mapping('tag:yaml.org,2002:map', data.items())
 
 
-yaml.add_representer(OrderedDict, represent_dict_order)
+yaml.add_representer(OrderedDict, _represent_dict_order)
 
 # We list here the units that appear in the pre-defined list of units for each
 # component. If a unit is not found, 'Custom' will be selected and a field will
